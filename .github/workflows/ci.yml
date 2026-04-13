@@ -1,0 +1,63 @@
+name: Enterprise CI Pipeline
+
+# 1. Quando é que isto corre?
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+
+jobs:
+  # ----------------------------------------
+  # TESTE 1: Garantir que o C# / .NET compila
+  # ----------------------------------------
+  build-backend:
+    name: Build .NET Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Backend # Entra na pasta do Backend
+        
+    steps:
+      - name: 📥 Fazer o Checkout do código
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configurar .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x' # Ajusta se estiveres a usar a versão 7
+
+      - name: 📦 Restaurar dependências
+        run: dotnet restore
+
+      - name: 🏗️ Compilar o Backend
+        run: dotnet build --no-restore --configuration Release
+
+
+  # ----------------------------------------
+  # TESTE 2: Garantir que o React/TS compila
+  # ----------------------------------------
+  build-frontend:
+    name: Build React Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Frontend # Entra na pasta do Frontend
+        
+    steps:
+      - name: 📥 Fazer o Checkout do código
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Instalar dependências do React
+        run: npm install
+
+      - name: 🧹 Verificar regras do TypeScript (Lint)
+        run: npm run lint
+
+      - name: 🏗️ Compilar o Frontend
+        run: npm run build
