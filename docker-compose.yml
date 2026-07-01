@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: spookytattoos_db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      # Exposto externamente nesta fase para se puder ligar com ferramentas externas se necessário.
+      # Quando o backend estiver na mesma network, podes apagar ou comentar este bloco.
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - spooky_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: spookytattoos_pgadmin
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - spooky_network
+
+# Definição da rede interna do Docker
+networks:
+  spooky_network:
+    driver: bridge
+
+volumes:
+  pgdata:
