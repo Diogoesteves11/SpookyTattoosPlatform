@@ -14,16 +14,30 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-
-CREATE OR REPLACE VIEW vw_monthly_revenue AS
+CREATE OR REPLACE VIEW vw_public_catalog AS
 SELECT 
-    TO_CHAR(scheduled_date, 'YYYY-MM') AS month_year,
-    type AS job_type,
-    COUNT(id) AS finished_jobs,
-    COALESCE(SUM(final_price), 0) AS total_revenue
-FROM jobs
-WHERE status = 'CONCLUIDO'
-GROUP BY 
-    TO_CHAR(scheduled_date, 'YYYY-MM'), type
-ORDER BY 
-    month_year DESC;
+    tc.id AS post_id,
+    tc.created_at,
+    tc.description,
+    
+    tci.image_url AS cover_image_url,
+    
+    j.type AS job_type,
+    
+    t.size_cm,
+    t.fill,
+    t.shadow,
+    t.detail,
+    t.has_color,
+    t.body_zone,
+    t.type AS tattoo_style,
+    
+    p.body_part
+
+FROM tattoo_catalog tc
+INNER JOIN jobs j ON tc.job_id = j.id
+LEFT JOIN job_tattoos_details t ON j.id = t.job_id
+LEFT JOIN job_piercings_details p ON j.id = p.job_id
+
+INNER JOIN tattoo_catalog_images tci 
+    ON tc.id = tci.catalog_id AND tci.display_order = 1;

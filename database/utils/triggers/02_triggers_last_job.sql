@@ -14,16 +14,20 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
+CREATE OR REPLACE FUNCTION update_client_last_visit()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.status = 'CONCLUIDO' AND OLD.status IS DISTINCT FROM 'CONCLUIDO' THEN
+        UPDATE clients
+        SET last_job = NEW.scheduled_date
+        WHERE id = NEW.client_id;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE VIEW vw_monthly_revenue AS
-SELECT 
-    TO_CHAR(scheduled_date, 'YYYY-MM') AS month_year,
-    type AS job_type,
-    COUNT(id) AS finished_jobs,
-    COALESCE(SUM(final_price), 0) AS total_revenue
-FROM jobs
-WHERE status = 'CONCLUIDO'
-GROUP BY 
-    TO_CHAR(scheduled_date, 'YYYY-MM'), type
-ORDER BY 
-    month_year DESC;
+CREATE TRIGGER trg_job_completed_update_client
+AFTER UPDATE ON jobs
+FOR EACH ROW
+EXECUTE FUNCTION update_client_last_visit();

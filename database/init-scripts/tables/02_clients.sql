@@ -14,7 +14,6 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
--- Ativar suporte avançado a pesquisas parciais de texto
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 CREATE TABLE clients (
@@ -29,9 +28,7 @@ CREATE TABLE clients (
 );
 
 
--- Índices GIN para as lupas de pesquisa na aplicação (suporta '%texto%')
 CREATE INDEX idx_clients_instagram_search ON clients USING GIN (instagram_user gin_trgm_ops);
 CREATE INDEX idx_clients_name_search ON clients USING GIN (full_name gin_trgm_ops);
 
--- Índice padrão B-Tree para os dashboards de top clientes (ordenação rápida)
 CREATE INDEX idx_clients_ghost_points ON clients(ghost_points DESC);

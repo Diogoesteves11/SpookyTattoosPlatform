@@ -21,11 +21,16 @@ CREATE TYPE job_type AS ENUM ('TATTOO', 'PIERCING');
 
 CREATE TABLE jobs (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    client_id INT NOT NULL REFERENCES clients(id) ON DELETE RESTRICT,
+    client_id INT NOT NULL,
     type job_type NOT NULL, 
     status job_status NOT NULL DEFAULT 'AGENDADO',
     final_price NUMERIC,
-    scheduled_date TIMESTAMPTZ NOT NULL
+    scheduled_date TIMESTAMPTZ NOT NULL,
+
+    CONSTRAINT fk_jobs_client 
+        FOREIGN KEY (client_id) 
+        REFERENCES clients(id) 
+        ON DELETE RESTRICT
 );
 
 CREATE TABLE job_tattoos_details (
@@ -44,3 +49,8 @@ CREATE TABLE job_piercings_details (
     body_part VARCHAR(50) NOT NULL
 );
 
+CREATE INDEX idx_job_schedule ON jobs(scheduled_date);
+
+CREATE INDEX idx_job_status ON jobs(status);
+
+CREATE INDEX idx_job_client ON jobs(client_id);

@@ -15,15 +15,17 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
 */
 
 
-CREATE OR REPLACE VIEW vw_monthly_revenue AS
+
+CREATE OR REPLACE VIEW vw_clientes_stats AS
 SELECT 
-    TO_CHAR(scheduled_date, 'YYYY-MM') AS month_year,
-    type AS job_type,
-    COUNT(id) AS finished_jobs,
-    COALESCE(SUM(final_price), 0) AS total_revenue
-FROM jobs
-WHERE status = 'CONCLUIDO'
+    c.id AS client_id,
+    c.full_name,
+    c.instagram_user,
+    c.last_job,
+    c.ghost_points,
+    COUNT(j.id) AS total_appointments,
+    COALESCE(SUM(j.final_price), 0) AS total_spent
+FROM clients c
+LEFT JOIN jobs j ON c.id = j.client_id AND j.status = 'CONCLUIDO'
 GROUP BY 
-    TO_CHAR(scheduled_date, 'YYYY-MM'), type
-ORDER BY 
-    month_year DESC;
+    c.id, c.full_name, c.instagram_user, c.last_job;
