@@ -14,16 +14,24 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-
-CREATE OR REPLACE VIEW vw_monthly_revenue AS
+CREATE OR REPLACE VIEW vw_complete_agenda AS
 SELECT 
-    TO_CHAR(scheduled_date, 'YYYY-MM') AS month_year,
-    type AS job_type,
-    COUNT(id) AS finished_jobs,
-    COALESCE(SUM(final_price), 0) AS total_revenue
-FROM jobs
-WHERE status = 'CONCLUIDO'
-GROUP BY 
-    TO_CHAR(scheduled_date, 'YYYY-MM'), type
-ORDER BY 
-    month_year DESC;
+    j.id AS job_id,
+    j.scheduled_date,
+    j.status,
+    j.type AS job_type,
+    j.final_price,
+    c.id AS client_id,
+    c.full_name AS client_name,
+    c.instagram_user,
+    c.phone_number,
+    -- Dados de Tattoo (NULL se for piercing)
+    t.size_cm,
+    t.has_color,
+    t.body_zone,
+    -- Dados de Piercing (NULL se for tattoo)
+    p.body_part
+FROM jobs j
+INNER JOIN clients c ON j.client_id = c.id
+LEFT JOIN job_tattoos_details t ON j.id = t.job_id
+LEFT JOIN job_piercings_details p ON j.id = p.job_id;

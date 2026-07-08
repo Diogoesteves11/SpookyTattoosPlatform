@@ -14,16 +14,14 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
+--  Ler, Inserir, Atualizar e Apagar DADOS (não tabelas)
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO spooky_api;
 
-CREATE OR REPLACE VIEW vw_monthly_revenue AS
-SELECT 
-    TO_CHAR(scheduled_date, 'YYYY-MM') AS month_year,
-    type AS job_type,
-    COUNT(id) AS finished_jobs,
-    COALESCE(SUM(final_price), 0) AS total_revenue
-FROM jobs
-WHERE status = 'CONCLUIDO'
-GROUP BY 
-    TO_CHAR(scheduled_date, 'YYYY-MM'), type
-ORDER BY 
-    month_year DESC;
+-- Permissão nas Sequências (Crítico para a API conseguir gerar IDs nos INSERTS)
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO spooky_api;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO spooky_api;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public 
+GRANT USAGE, SELECT ON SEQUENCES TO spooky_api;

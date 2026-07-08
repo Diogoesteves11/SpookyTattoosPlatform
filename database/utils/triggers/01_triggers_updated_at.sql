@@ -14,16 +14,23 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
-CREATE OR REPLACE VIEW vw_monthly_revenue AS
-SELECT 
-    TO_CHAR(scheduled_date, 'YYYY-MM') AS month_year,
-    type AS job_type,
-    COUNT(id) AS finished_jobs,
-    COALESCE(SUM(final_price), 0) AS total_revenue
-FROM jobs
-WHERE status = 'CONCLUIDO'
-GROUP BY 
-    TO_CHAR(scheduled_date, 'YYYY-MM'), type
-ORDER BY 
-    month_year DESC;
+CREATE OR REPLACE FUNCTION set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_clients_updated_at
+BEFORE UPDATE ON clients
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+CREATE TRIGGER trg_jobs_updated_at
+BEFORE UPDATE ON jobs
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();

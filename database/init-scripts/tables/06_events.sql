@@ -15,15 +15,19 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
 */
 
 
-CREATE OR REPLACE VIEW vw_monthly_revenue AS
-SELECT 
-    TO_CHAR(scheduled_date, 'YYYY-MM') AS month_year,
-    type AS job_type,
-    COUNT(id) AS finished_jobs,
-    COALESCE(SUM(final_price), 0) AS total_revenue
-FROM jobs
-WHERE status = 'CONCLUIDO'
-GROUP BY 
-    TO_CHAR(scheduled_date, 'YYYY-MM'), type
-ORDER BY 
-    month_year DESC;
+
+CREATE TABLE events(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    event_name VARCHAR(255) NOT NULL,
+    start_date TIMESTAMPTZ NOT NULL,
+    end_date TIMESTAMPTZ NOT NULL,
+    description TEXT,
+
+    event_img_url VARCHAR(500),
+
+    CONSTRAINT chk_event_dates CHECK (end_date >= start_date)
+);
+
+CREATE INDEX idx_event_name ON events(event_name);
+
+CREATE INDEX idx_event_start_date ON events(start_date);
