@@ -72,6 +72,27 @@ services:
       "
     networks:
       - spooky_network
+  
+  api:
+    build:
+      context: ./backend 
+      dockerfile: Dockerfile
+    container_name: spookytattoos_api
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8080:8080" 
+    environment:
+      # modo de desenvolvimento para mostrar erros detalhados (opcional)
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Configurar a porta do ASP.NET Core
+      - ASPNETCORE_HTTP_PORTS=8080
+    depends_on:
+      - db
+      - minio
+    networks:
+      - spooky_network
 
 networks:
   spooky_network:
@@ -79,4 +100,4 @@ networks:
 
 volumes:
   pgdata:
-  minio_data: # Regista aqui o novo volume para as imagens
+  minio_data:

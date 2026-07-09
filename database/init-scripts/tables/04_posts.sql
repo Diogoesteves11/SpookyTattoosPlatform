@@ -15,7 +15,7 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
 */
 
 
-CREATE TABLE piercing_catalog (
+CREATE TABLE post_catalog_items (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     job_id INT NOT NULL,
     description TEXT,
@@ -29,21 +29,21 @@ CREATE TABLE piercing_catalog (
         ON DELETE RESTRICT
 );
 
-CREATE TABLE piercing_catalog_images (
+CREATE TABLE post_final_images (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     catalog_id INT NOT NULL,
     
-    -- O caminho que vem da Cloud (S3) ou do teu MinIO (container docker)
+    -- Caminho do MinIO (container docker)
     image_url VARCHAR(500) NOT NULL, 
     
-    -- Qual é a imagem de capa? (Ordem no carrossel)
+    -- Imagem de capa
     display_order INT NOT NULL DEFAULT 1 CHECK (display_order > 0),
     
     CONSTRAINT fk_piercing_images_catalog
         FOREIGN KEY (catalog_id)
-        REFERENCES piercing_catalog(id)
+        REFERENCES post_catalog_items(id)
         ON DELETE CASCADE
 );
 
-CREATE INDEX idx_piercing_catalog_job_id ON piercing_catalog(job_id);
-CREATE INDEX idx_piercing_catalog_images_catalog_id ON piercing_catalog_images(catalog_id);
+CREATE INDEX idx_post_catalog_items_job_id ON post_catalog_items(job_id);
+CREATE INDEX idx_post_final_images_catalog_id ON post_final_images(catalog_id);

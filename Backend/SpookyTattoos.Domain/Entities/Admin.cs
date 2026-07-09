@@ -14,24 +14,22 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-CREATE OR REPLACE VIEW vw_complete_agenda AS
-SELECT 
-    j.id AS job_id,
-    j.scheduled_date,
-    j.status,
-    j.type AS job_type,
-    j.final_price,
-    c.id AS client_id,
-    c.full_name AS client_name,
-    c.instagram_user,
-    c.phone_number,
-    -- Dados de Tattoo (NULL se for piercing)
-    t.size_cm,
-    t.has_color,
-    t.body_zone,
-    -- Dados de Piercing (NULL se for tattoo)
-    p.body_part
-FROM jobs j
-INNER JOIN clients c ON j.client_id = c.id
-LEFT JOIN job_tattoo_details t ON j.id = t.job_id
-LEFT JOIN job_piercing_details p ON j.id = p.job_id;
+
+namespace SpookyTattoos.Domain.Entities;
+
+
+public class Admin 
+{
+    public int Id {get; set; }
+
+    public required string Username {get; set;}
+
+    public required string Email {get; set;}
+
+    public required string Password{get; set;}
+
+    public DateTimeOffset CreatedAt {get; set;} = DateTimeOffset.UtcNow;
+
+    public DateTimeOffset LastLogin {get; set; }
+
+} 

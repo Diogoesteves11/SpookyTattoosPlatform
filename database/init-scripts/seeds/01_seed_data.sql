@@ -29,12 +29,14 @@ INSERT INTO jobs (client_id, type, status, final_price, scheduled_date) VALUES
 (1, 'TATTOO', 'AGENDADO', NULL, NOW() + INTERVAL '5 days'),
 (3, 'TATTOO', 'EXECUCAO', NULL, NOW());
 
-INSERT INTO job_tattoos_details (job_id, size_cm, fill, shadow, detail, has_color, body_zone, type) VALUES
-(1, 15.5, 3, 4, 5, true, 2, 'Neo-Traditional'),
-(3, 8.0, 1, 1, 2, false, 4, 'Fine Line'),
-(4, 25.0, 5, 5, 5, false, 1, 'Realism');
+-- CORREÇÃO: Tabela atualizada para job_tattoo_details
+INSERT INTO job_tattoo_details (job_id, size_cm, fill, shadow, detail, has_color, body_zone, style) VALUES
+(1, 15.5, 3, 4, 5, true, 2, 'NEO-TRADITIONAL'),
+(3, 8.0, 1, 1, 2, false, 4, 'FINE LINE'),
+(4, 25.0, 5, 5, 5, false, 1, 'REALISM');
 
-INSERT INTO job_piercings_details (job_id, body_part) VALUES
+-- CORREÇÃO: Tabela atualizada para job_piercing_details
+INSERT INTO job_piercing_details (job_id, body_part) VALUES
 (2, 'Septum');
 
 INSERT INTO tattoo_catalog (job_id, description, post_text, is_published) VALUES

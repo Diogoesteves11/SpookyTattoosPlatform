@@ -14,8 +14,6 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-
-
 /*
 ======================================================
   BATERIA DE TESTES (20 CENÁRIOS)
@@ -47,7 +45,8 @@ VALUES (
 );
 
 -- [TESTE 7: INSERÇÃO CASCATA] Adicionar detalhes à marcação anterior
-INSERT INTO job_piercings_details (job_id, body_part) 
+-- CORREÇÃO: Tabela atualizada para job_piercing_details
+INSERT INTO job_piercing_details (job_id, body_part) 
 VALUES ((SELECT MAX(id) FROM jobs), 'Nostril');
 
 -- [TESTE 8: RESTRIÇÃO - FOREIGN KEY] Tentar apagar cliente com marcações (DEVE DAR ERRO devido a ON DELETE RESTRICT)
@@ -57,15 +56,17 @@ VALUES ((SELECT MAX(id) FROM jobs), 'Nostril');
 UPDATE jobs SET status = 'CONCLUIDO', final_price = 100.00 WHERE id = 3;
 
 -- [TESTE 10: LEITURA JOIN] Cruzar Jobs com Tattoos Details
+-- CORREÇÃO: Tabela atualizada para job_tattoo_details
 SELECT j.id, j.status, t.size_cm, t.type AS style 
 FROM jobs j 
-JOIN job_tattoos_details t ON j.id = t.job_id;
+JOIN job_tattoo_details t ON j.id = t.job_id;
 
 -- [TESTE 11: EXCLUSÃO EM CASCATA] Apagar um job e garantir que os detalhes somem
 DELETE FROM jobs 
 WHERE client_id = (SELECT id FROM clients WHERE email = 'daniel@email.com') 
   AND type = 'PIERCING';
--- SELECT * FROM job_tattoos_details WHERE job_id = 4; (Deve retornar 0 linhas)
+-- CORREÇÃO: Comentário atualizado para refletir o novo nome
+-- SELECT * FROM job_tattoo_details WHERE job_id = 4; (Deve retornar 0 linhas)
 
 -- [TESTE 12: INSERÇÃO] Adicionar post ao catálogo de Tattoos
 INSERT INTO tattoo_catalog (job_id, description, is_published) 
@@ -90,7 +91,8 @@ SELECT cover_image_url, tattoo_style, has_color
 FROM vw_public_catalog;
 
 -- [TESTE 18: RESTRIÇÃO - CHECK] Inserir detalhe de tattoo com parâmetro inválido (DEVE DAR ERRO)
--- INSERT INTO job_tattoos_details (job_id, size_cm, fill, shadow, detail, has_color, body_zone, type) 
+-- CORREÇÃO: Tabela atualizada para job_tattoo_details
+-- INSERT INTO job_tattoo_details (job_id, size_cm, fill, shadow, detail, has_color, body_zone, type) 
 -- VALUES (1, 10, 6, 2, 2, false, 2, 'Tribal'); -- O fill 6 viola o CHECK(1 a 5)
 
 -- [TESTE 19: RESTRIÇÃO - DATAS] Inserir evento a acabar antes de começar (DEVE DAR ERRO)

@@ -19,8 +19,13 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
 CREATE TYPE job_status AS ENUM ('AGENDADO', 'EXECUCAO', 'CONCLUIDO', 'CANCELADO', 'REAGENDADO');
 CREATE TYPE job_type AS ENUM ('TATTOO', 'PIERCING');
 
+CREATE TYPE tattoo_style AS ENUM ('FLASH', 'REALISM', 'NEO-TRADITIONAL', 'FINE LINE')
+CREATE TYPE piercing_type AS ENUM ('MICRODERMAL')
+CREATE TYPE piercing_body_part AS ENUM ('ORELHA', 'SEPTRO', 'NARIZ', 'UMBIGO')
+
 CREATE TABLE jobs (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    referenceImageUrl VARCHAR(500) NOT NULL,
     client_id INT NOT NULL,
     type job_type NOT NULL, 
     status job_status NOT NULL DEFAULT 'AGENDADO',
@@ -33,21 +38,29 @@ CREATE TABLE jobs (
         ON DELETE RESTRICT
 );
 
-CREATE TABLE job_tattoos_details (
-    job_id INT PRIMARY KEY REFERENCES jobs(id) ON DELETE CASCADE,
+CREATE TABLE job_tattoo_details (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    job_id INT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
     size_cm NUMERIC NOT NULL,
     fill NUMERIC NOT NULL CHECK (fill BETWEEN 1 AND 5),
     shadow NUMERIC NOT NULL CHECK (shadow BETWEEN 1 AND 5),
     detail INT NOT NULL CHECK (detail BETWEEN 1 AND 5),
     has_color BOOLEAN NOT NULL DEFAULT FALSE,
     body_zone NUMERIC NOT NULL CHECK (body_zone BETWEEN 1 AND 5),
-    type VARCHAR(100) NOT NULL
+    style tattoo_style VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE job_piercings_details (
-    job_id INT PRIMARY KEY REFERENCES jobs(id) ON DELETE CASCADE,
-    body_part VARCHAR(50) NOT NULL
+
+CREATE TABLE job_piercing_details (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    job_id INT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+    body_part VARCHAR(50) NOT NULL,
+    type piercing_type
 );
+
+CREATE INDEX idx_job_tattoo_job_id ON job_tattoo_details(job_id);
+
+CREATE INDEX idx_job_piercing_job_id ON job_piercing_details(job_id);
 
 CREATE INDEX idx_job_schedule ON jobs(scheduled_date);
 
