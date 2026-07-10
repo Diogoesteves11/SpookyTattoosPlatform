@@ -14,33 +14,18 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-namespace SpookyTattoos.Domain.Entities;
 
-public enum PiercingTypes
-{
-    MICRODERMAL
-}
-
-public enum PiercingBodyPart
-{
-    ORELHA,
-    SEPTRO,
-    NARIZ,
-    UMBIGO
-}
-
-public class Piercing 
-{
-    public int Id { get; set; }
-
-    public required int JobId { get; set; }
-    public Job? Job { get; set; }
-
-    public required PiercingBodyPart BodyPart { get; set; }
-    public required PiercingTypes Type { get; set; }
-
-    public int GhostPoints()
-    {
-        return 2;
-    }
-}
+CREATE VIEW vw_voucher_validation AS
+SELECT 
+    v.id AS voucher_id,
+    cl.full_name AS emitter_name,
+    v.value AS voucher_value,
+    v.generated_at,
+    v.expires_at,
+    v.is_used,
+    CASE 
+        WHEN v.is_used = FALSE AND v.expires_at >= NOW() THEN TRUE
+        ELSE FALSE
+    END AS is_valid
+FROM vouchers v
+JOIN clients cl ON v.emitter = cl.id;

@@ -14,21 +14,31 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-
 namespace SpookyTattoos.Domain.Entities;
 
+// Ajustado para refletir o SQL (hífen não é permitido em Enums de C#, usamos underscore)
 public enum TattooStyles
 {
     FLASH, 
+    REALISM,
+    NEO_TRADITIONAL,
+    FINE_LINE,
     MINIMALISM
 }
 
 public class Tattoo
 {
-    public int Id {get; set;}
+    public int Id { get; set; }
 
-    public required int Size {get; set;}
-    public TattooStyles style;
+    public required decimal SizeCm { get; set; }
+    
+    public string? name {get; set;}
+    public required TattooStyles Style { get; set; }
+
+    public decimal FinalTattooPrice { get; set; } = 0;
+
+    public required int JobId { get; set; }
+    public Job? Job { get; set; }
 
     private int _fillScore;
     public int FillScore
@@ -38,7 +48,7 @@ public class Tattoo
         {
             if (value < 1 || value > 5)
             {
-                throw new ArgumentOutOfRangeException(nameof(FillScore), "The Fill Score should be between 1 and 5.");
+                throw new ArgumentOutOfRangeException(nameof(FillScore), "O Fill Score tem de estar entre 1 e 5.");
             }
             _fillScore = value;
         }
@@ -52,7 +62,7 @@ public class Tattoo
         {
             if (value < 1 || value > 5)
             {
-                throw new ArgumentOutOfRangeException(nameof(ShadowScore), "The Shadow Score should be between 1 and 5.");
+                throw new ArgumentOutOfRangeException(nameof(ShadowScore), "O Shadow Score tem de estar entre 1 e 5.");
             }
             _shadowScore = value;
         }
@@ -66,13 +76,13 @@ public class Tattoo
         {
             if (value < 1 || value > 5)
             {
-                throw new ArgumentOutOfRangeException(nameof(DetailScore), "The Detail Score should be between 1 and 5.");
+                throw new ArgumentOutOfRangeException(nameof(DetailScore), "O Detail Score tem de estar entre 1 e 5.");
             }
             _detailScore = value;
         }
     }
 
-    public bool HasColor {get; set;} = False;
+    public bool HasColor { get; set; } = false;
 
     private int _bodyZoneScore;
     public int BodyZoneScore
@@ -82,17 +92,14 @@ public class Tattoo
         {
             if (value < 1 || value > 5)
             {
-                throw new ArgumentOutOfRangeException(nameof(DetailScore), "The Body Zone Score should be between 1 and 5.");
+                throw new ArgumentOutOfRangeException(nameof(BodyZoneScore), "O Body Zone Score tem de estar entre 1 e 5.");
             }
             _bodyZoneScore = value;
         }
     }
 
-    // --- CONSTANTES DE NEGÓCIO ---
-    private const decimal PRECO_BASE_POR_CM = 8.0m;
-    private const decimal PRECO_MINIMO = 40.0m;
-
-    // --- MÉTODOS DE CÁLCULO DE ORÇAMENTO ---
+    private const decimal BASE_PRICE_FOR_CM = 8.0m;
+    private const decimal MINIMUM_PRICE = 40.0m;
 
     /// <summary>
     /// Calcula o Índice de Complexidade (IC) com base no preenchimento, sombra e detalhe.
@@ -102,21 +109,22 @@ public class Tattoo
     {
         decimal colorMultiplier = HasColor ? 1.2m : 1.0m;
         
-        decimal somaCaracteristicas = Fill + Shadow + Detail;
+        // Corrigidas as variáveis para os teus novos nomes (Score)
+        decimal somaCaracteristicas = FillScore + ShadowScore + DetailScore;
         
         // Fórmula: 1 + ((Soma - 3) / 5)
         decimal baseIndex = 1.0m + ((somaCaracteristicas - 3m) / 5m);
         
         return baseIndex * colorMultiplier;
     }
-
     /// <summary>
     /// Calcula o multiplicador de dificuldade da zona do corpo (Z).
     /// Incrementos de 10% por cada nível de zona acima de 1.
     /// </summary>
     private decimal CalculateZoneMultiplier()
     {
-        return 1.0m + ((BodyZone - 1m) / 10m);
+        // Corrigida a variável para o teu novo nome (BodyZoneScore)
+        return 1.0m + ((BodyZoneScore - 1m) / 10m);
     }
 
     /// <summary>
@@ -127,23 +135,24 @@ public class Tattoo
         decimal ic = CalculateComplexityIndex();
         decimal z = CalculateZoneMultiplier();
         
-        decimal estimatedRawPrice = SizeCm * PRECO_BASE_POR_CM * ic * z;
+        decimal estimatedRawPrice = SizeCm * BASE_PRICE_FOR_CM * ic * z;
 
-        // 2. Proteção de Margem (Teto Mínimo de 40€)
-        decimal priceWithMinimum = Math.Max(PRECO_MINIMO, estimatedRawPrice);
+        decimal priceWithMinimum = Math.Max(MINIMUM_PRICE, estimatedRawPrice);
 
-        // 3. Arredondamento para o múltiplo de 5€ mais próximo (Sempre por excesso)
+        // 3. Arredondamento para o múltiplo de 5€ mais próximo (por excesso)
         // Exemplo: 41€ / 5 = 8.2 -> Ceiling(8.2) = 9 -> 9 * 5 = 45€
         decimal roundedPrice = Math.Ceiling(priceWithMinimum / 5.0m) * 5.0m;
 
         return roundedPrice;
     }
 
-    public decimal GhostPoints()
+    ///<summary>
+    /// Com base no valor estimado pela tatuagem, caso o preço praticado da tatuagem for superior a 80€, são atribuidos 10 Ghost Points
+    /// Em casos contrários, são atribuidos 5 Ghost Points
+    /// </summary>
+    public int GhostPoints()
     {
-        return 1;
+        int ghostPoints = FinalTattooPrice >= 80 ? 10 : 5;
+        return ghostPoints;
     }
-
-   
 }
-

@@ -21,7 +21,7 @@ CREATE TYPE job_type AS ENUM ('TATTOO', 'PIERCING');
 
 CREATE TYPE tattoo_style AS ENUM ('FLASH', 'REALISM', 'NEO-TRADITIONAL', 'FINE LINE')
 CREATE TYPE piercing_type AS ENUM ('MICRODERMAL')
-CREATE TYPE piercing_body_part AS ENUM ('ORELHA', 'SEPTRO', 'NARIZ', 'UMBIGO')
+CREATE TYPE piercing_body_part AS ENUM ('ORELHA', 'NARIZ', 'UMBIGO')
 
 CREATE TABLE jobs (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -40,6 +40,7 @@ CREATE TABLE jobs (
 
 CREATE TABLE job_tattoo_details (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
     job_id INT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
     size_cm NUMERIC NOT NULL,
     fill NUMERIC NOT NULL CHECK (fill BETWEEN 1 AND 5),
@@ -47,15 +48,15 @@ CREATE TABLE job_tattoo_details (
     detail INT NOT NULL CHECK (detail BETWEEN 1 AND 5),
     has_color BOOLEAN NOT NULL DEFAULT FALSE,
     body_zone NUMERIC NOT NULL CHECK (body_zone BETWEEN 1 AND 5),
-    style tattoo_style VARCHAR(100) NOT NULL
+    style tattoo_style NOT NULL
 );
 
 
 CREATE TABLE job_piercing_details (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     job_id INT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
-    body_part VARCHAR(50) NOT NULL,
-    type piercing_type
+    body_part piercing_body_part NOT NULL,
+    type piercing_type NOT NULL
 );
 
 CREATE INDEX idx_job_tattoo_job_id ON job_tattoo_details(job_id);

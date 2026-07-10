@@ -14,20 +14,19 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-
-namespace SpookyTattoos.Domain.Entity;
+namespace SpookyTattoos.Domain.Entities;
 
 public class Event
 {
-    public int Id {get; set;}
+    public int Id { get; set; }
 
-    public required string EventName {get; set;};
+    public required string EventName { get; set; }
 
-    public DateTimeOffset StartDate {get; set;}
+    public DateTimeOffset StartDate { get; set; }
 
-    public DateTimeOffset EndDate {get; set;}
+    public DateTimeOffset EndDate { get; set; }
 
-    public string Description {get; set;}
+    public string? Description { get; set; } 
 
-    public string? ImageUrl {get; set;}
+    public string? ImageUrl { get; set; }
 }

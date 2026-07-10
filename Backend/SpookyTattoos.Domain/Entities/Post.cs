@@ -14,41 +14,43 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-
 namespace SpookyTattoos.Domain.Entities;
-
 
 public class PostImage
 {
-    public string ImageUrl;
-    private int _DisplayOrder;
-    public int DisplayOrder {
-        get => _DisplayOrder;
+    public int Id { get; set; }
+    
+    public required int PostId { get; set; }
+    public Post? Post { get; set; }
+
+    public required string ImageUrl { get; set; }
+    
+    private int _displayOrder = 1;
+    public int DisplayOrder 
+    {
+        get => _displayOrder;
         set
         {
             if (value < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(DisplayOrder), "The FDisplay order should be between 1 and 5.");
+                throw new ArgumentOutOfRangeException(nameof(DisplayOrder), "A ordem de exibição tem de ser maior que 0.");
             }
-            _DisplayOrder = value;
+            _displayOrder = value;
         }
     }
 }
 
 public class Post
 {
-    public int Id {get; set;}
-    public int JobId {get; set;}
+    public int Id { get; set; }
+    
+    public required int JobId { get; set; }
+    public Job? Job { get; set; }
 
-    public Job job {get; set;}
+    public string? Description { get; set; }
+    public string? PostText { get; set; }
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public bool IsPublished { get; set; } = false;
 
-    public string? Description {get; set;}
-
-    public string? PostText {get; set;}
-
-    public DateTimeOffset CreatedAt {get; set;} = DateTimeOffset.UtcNow;
-
-    public bool IsPublished {get; set;} = False;
-
-    ICollection<PostImage> Images = new List<PostImages>();
+    public ICollection<PostImage> Images { get; set; } = new List<PostImage>();
 }

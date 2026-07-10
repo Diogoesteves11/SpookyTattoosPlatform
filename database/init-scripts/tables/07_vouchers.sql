@@ -14,21 +14,20 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
-CREATE TABLE clients (
+
+CREATE TABLE vouchers(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    full_name VARCHAR(100) NOT NULL,
-    email VARCHAR(150) UNIQUE,
-    phone_number VARCHAR(20) NOT NULL,
-    instagram_user VARCHAR(50) DEFAULT '',
-    ghost_points INT NOT NULL DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    last_job TIMESTAMPTZ
+    emitter INT NOT NULL,
+    value NUMERIC NOT NULL,
+    used BOOLEAN DEFAULT FALSE,
+    generated_at TIMESTAMPTZ DEFAULT NOW(),
+    expires_at TIMESTAMPTZ DEFAULT NOW() + INTERVAL '1 year',
+    
+    CONSTRAINT fk_vouchers_emitter
+        FOREIGN KEY (emitter)
+        REFERENCES clients(id)
+        ON DELETE CASCADE
 );
 
-
-CREATE INDEX idx_clients_instagram_search ON clients USING GIN (instagram_user gin_trgm_ops);
-CREATE INDEX idx_clients_name_search ON clients USING GIN (full_name gin_trgm_ops);
-
-CREATE INDEX idx_clients_ghost_points ON clients(ghost_points DESC);
+CREATE INDEX idx_vouchers_emitter ON vouchers(emitter);

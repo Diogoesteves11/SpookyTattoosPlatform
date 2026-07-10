@@ -47,13 +47,30 @@ public class Job
     
     public required DateTimeOffset ScheduledDate { get; set; }
 
-    public required string ReferenceImageUrl {get; set;}
+    public required string ReferenceImageUrl { get; set; }
 
-
+    // Relações 1-para-N
     public ICollection<Tattoo> Tattoos { get; set; } = new List<Tattoo>();
     public ICollection<Piercing> Piercings { get; set; } = new List<Piercing>();
 
-    public TattooCatalogPost? CatalogPost { get; set; }
-    public PiercingCatalogPost? PiercingCatalog { get; set; }
-}
+    public Post? CatalogPost { get; set; }
 
+    public int CalculateGhostPoints()
+    {
+        if (!FinalPrice.HasValue || FinalPrice.Value <= 0) return 0;
+        
+        int jobGhostPoints = 0;
+
+        foreach (Tattoo t in Tattoos)
+        {
+            jobGhostPoints += t.GhostPoints();
+        }
+
+        foreach (Piercing p in Piercings)
+        {
+            jobGhostPoints += p.GhostPoints();
+        }
+
+        return jobGhostPoints;
+    }
+}

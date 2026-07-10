@@ -16,31 +16,16 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
 
 namespace SpookyTattoos.Domain.Entities;
 
-public enum PiercingTypes
-{
-    MICRODERMAL
-}
-
-public enum PiercingBodyPart
-{
-    ORELHA,
-    SEPTRO,
-    NARIZ,
-    UMBIGO
-}
-
-public class Piercing 
+public class Coupon
 {
     public int Id { get; set; }
+    
+    public required int ClientId { get; set; }
+    public Client? Client { get; set; }
 
-    public required int JobId { get; set; }
-    public Job? Job { get; set; }
+    public required int PromoId { get; set; }
+    public Promo? Promo { get; set; }
 
-    public required PiercingBodyPart BodyPart { get; set; }
-    public required PiercingTypes Type { get; set; }
-
-    public int GhostPoints()
-    {
-        return 2;
-    }
+    public bool IsUsed { get; set; } = false;
+    public DateTimeOffset AcquiredAt { get; set; } = DateTimeOffset.UtcNow;
 }
