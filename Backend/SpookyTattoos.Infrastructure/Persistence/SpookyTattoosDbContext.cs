@@ -14,6 +14,7 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
+using System;
 using Microsoft.EntityFrameworkCore;
 using SpookyTattoos.Domain.Entities;
 
@@ -42,12 +43,26 @@ public class SpookyTattoosDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+
+        modelBuilder.Entity<Admin>().ToTable("admins");
+        modelBuilder.Entity<Client>().ToTable("clients");
+        modelBuilder.Entity<Job>().ToTable("jobs");
+        modelBuilder.Entity<Piercing>().ToTable("job_piercing_details");
+        modelBuilder.Entity<Post>().ToTable("post_catalog_items");
+        modelBuilder.Entity<PostImage>().ToTable("post_final_images");
+        modelBuilder.Entity<Coupon>().ToTable("coupons");
+        modelBuilder.Entity<Voucher>().ToTable("vouchers");
+
+
+        modelBuilder.Entity<Tattoo>().Property(t => t.FillScore).HasColumnName("fill");
+        modelBuilder.Entity<Tattoo>().Property(t => t.ShadowScore).HasColumnName("shadow");
+        modelBuilder.Entity<Tattoo>().Property(t => t.DetailScore).HasColumnName("detail");
+        modelBuilder.Entity<Tattoo>().Property(t => t.BodyZoneScore).HasColumnName("body_zone");
+
         modelBuilder.Entity<Admin>().HasIndex(a => a.Username).IsUnique();
         modelBuilder.Entity<Admin>().HasIndex(a => a.Email).IsUnique();
         
         modelBuilder.Entity<Client>().HasIndex(c => c.Email).IsUnique();
-        
-
         modelBuilder.Entity<Client>().HasIndex(c => c.GhostPoints).IsDescending();
 
         modelBuilder.Entity<Job>().Property(j => j.Status).HasConversion<string>();
@@ -56,7 +71,19 @@ public class SpookyTattoosDbContext : DbContext
         modelBuilder.Entity<Piercing>().Property(p => p.Type).HasConversion<string>();
         modelBuilder.Entity<Piercing>().Property(p => p.BodyPart).HasConversion<string>();
 
+
+        modelBuilder.Entity<Admin>().HasData(
+            new Admin 
+            { 
+                Id = 1, 
+                Username = "admin", 
+                Email = "admin@spookytattoos.com",
+                Password = "Admin123!",
+                CreatedAt = new DateTimeOffset(2026, 7, 13, 12, 0, 0, TimeSpan.Zero) 
+            }
+        );
         
+
         modelBuilder.Entity<Tattoo>()
             .HasOne(t => t.Job)
             .WithMany(j => j.Tattoos)
@@ -87,21 +114,6 @@ public class SpookyTattoosDbContext : DbContext
             .HasForeignKey(pi => pi.PostId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        
-        modelBuilder.Entity<Tattoo>().ToTable(t => 
-        {
-            t.HasCheckConstraint("CK_Tattoo_FillScore", "\"FillScore\" BETWEEN 1 AND 5");
-            t.HasCheckConstraint("CK_Tattoo_ShadowScore", "\"ShadowScore\" BETWEEN 1 AND 5");
-            t.HasCheckConstraint("CK_Tattoo_DetailScore", "\"DetailScore\" BETWEEN 1 AND 5");
-            t.HasCheckConstraint("CK_Tattoo_BodyZoneScore", "\"BodyZoneScore\" BETWEEN 1 AND 5");
-        });
-
-        modelBuilder.Entity<Event>().ToTable(e => 
-            e.HasCheckConstraint("CK_Event_Dates", "\"EndDate\" >= \"StartDate\""));
-            
-        modelBuilder.Entity<Promo>().ToTable(p => 
-            p.HasCheckConstraint("CK_Promo_Dates", "\"EndDate\" >= \"StartDate\""));
-
         modelBuilder.Entity<Coupon>()
             .HasOne(c => c.Client)
             .WithMany(cl => cl.Coupons)
@@ -119,5 +131,20 @@ public class SpookyTattoosDbContext : DbContext
             .WithMany(c => c.IssuedVouchers)
             .HasForeignKey(v => v.EmitterId)
             .OnDelete(DeleteBehavior.Cascade);
+
+
+        modelBuilder.Entity<Tattoo>().ToTable("job_tattoo_details", t => 
+        {
+            t.HasCheckConstraint("CK_Tattoo_FillScore", "\"fill\" BETWEEN 1 AND 5");
+            t.HasCheckConstraint("CK_Tattoo_ShadowScore", "\"shadow\" BETWEEN 1 AND 5");
+            t.HasCheckConstraint("CK_Tattoo_DetailScore", "\"detail\" BETWEEN 1 AND 5");
+            t.HasCheckConstraint("CK_Tattoo_BodyZoneScore", "\"body_zone\" BETWEEN 1 AND 5");
+        });
+
+        modelBuilder.Entity<Event>().ToTable("events", e => 
+            e.HasCheckConstraint("CK_Event_Dates", "end_date >= start_date")); 
+            
+        modelBuilder.Entity<Promo>().ToTable("promos", p => 
+            p.HasCheckConstraint("CK_Promo_Dates", "end_date >= start_date")); 
     }
 }

@@ -84,10 +84,9 @@ services:
     ports:
       - "8080:8080" 
     environment:
-      # modo de desenvolvimento para mostrar erros detalhados (opcional)
       - ASPNETCORE_ENVIRONMENT=Development
-      # Configurar a porta do ASP.NET Core
       - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=spookytattoos_db;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     depends_on:
       - db
       - minio

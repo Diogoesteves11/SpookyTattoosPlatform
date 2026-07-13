@@ -36,4 +36,13 @@ public class Voucher
     {
         return DateTimeOffset.UtcNow > ExpiresAt;
     }
+
+     public void MarkAsUsed()
+    {
+        if (IsUsed)
+        {
+            throw new InvalidOperationException("Este cupão já foi utilizado!");
+        }
+        IsUsed = true;
+    }
 }

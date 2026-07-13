@@ -1,14 +1,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-COPY ["SpookyTattoos.sln", "./"]
+COPY ["SpookyTattoos.slnx", "./"]
 COPY ["SpookyTattoos.API/SpookyTattoos.API.csproj", "SpookyTattoos.API/"]
 COPY ["SpookyTattoos.Application/SpookyTattoos.Application.csproj", "SpookyTattoos.Application/"]
 COPY ["SpookyTattoos.Domain/SpookyTattoos.Domain.csproj", "SpookyTattoos.Domain/"]
 COPY ["SpookyTattoos.Infrastructure/SpookyTattoos.Infrastructure.csproj", "SpookyTattoos.Infrastructure/"]
 
 
-RUN dotnet restore "SpookyTattoos.sln"
+RUN dotnet restore "SpookyTattoos.slnx"
 
 COPY . .
 WORKDIR "/src/SpookyTattoos.API"

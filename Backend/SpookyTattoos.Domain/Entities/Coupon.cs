@@ -28,4 +28,14 @@ public class Coupon
 
     public bool IsUsed { get; set; } = false;
     public DateTimeOffset AcquiredAt { get; set; } = DateTimeOffset.UtcNow;
+
+
+    public void MarkAsUsed()
+    {
+        if (IsUsed)
+        {
+            throw new InvalidOperationException("Este cupão já foi utilizado!");
+        }
+        IsUsed = true;
+    }
 }
