@@ -114,7 +114,7 @@ public class SpookyTattoosDbContext : DbContext
                 Id = 1, 
                 Username = "admin", 
                 Email = "admin@spookytattoos.com",
-                Password = "Admin123!",
+                Password = "$2a$13$pXEy4SRWCpx9uZsQy8qjjeVVGuZjz2q7nPMjJ4HT7EIW7VnN4SRzS",
                 Active = true,
                 CreatedAt = new DateTimeOffset(2026, 7, 13, 12, 0, 0, TimeSpan.Zero) 
             }

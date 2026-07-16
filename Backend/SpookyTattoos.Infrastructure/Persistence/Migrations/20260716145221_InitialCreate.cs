@@ -5,7 +5,7 @@
 namespace SpookyTattoos.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddViewsAndTriggers : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

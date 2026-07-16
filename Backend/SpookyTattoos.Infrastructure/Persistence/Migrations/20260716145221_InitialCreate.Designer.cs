@@ -12,8 +12,8 @@ using SpookyTattoos.Infrastructure.Persistence;
 namespace SpookyTattoos.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SpookyTattoosDbContext))]
-    [Migration("20260716113744_AddViewsAndTriggers")]
-    partial class AddViewsAndTriggers
+    [Migration("20260716145221_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -90,7 +90,7 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                             CreatedAt = new DateTimeOffset(new DateTime(2026, 7, 13, 12, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "admin@spookytattoos.com",
                             LastLogin = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Password = "Admin123!",
+                            Password = "$2a$13$pXEy4SRWCpx9uZsQy8qjjeVVGuZjz2q7nPMjJ4HT7EIW7VnN4SRzS",
                             Username = "admin"
                         });
                 });
