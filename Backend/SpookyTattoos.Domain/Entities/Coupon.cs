@@ -1,0 +1,41 @@
+/*
+Copyright 2026 Diogo Esteves, Guilherme Mattos
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+namespace SpookyTattoos.Domain.Entities;
+
+public class Coupon
+{
+    public int Id { get; set; }
+    
+    public required int ClientId { get; set; }
+    public Client? Client { get; set; }
+
+    public required int PromoId { get; set; }
+    public Promo? Promo { get; set; }
+
+    public bool IsUsed { get; set; } = false;
+    public DateTimeOffset AcquiredAt { get; set; } = DateTimeOffset.UtcNow;
+
+
+    public void MarkAsUsed()
+    {
+        if (IsUsed)
+        {
+            throw new InvalidOperationException("Coupon already used");
+        }
+        IsUsed = true;
+    }
+}

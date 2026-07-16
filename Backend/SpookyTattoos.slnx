@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SpookyTattoos.API/SpookyTattoos.API.csproj" />
+  <Project Path="SpookyTattoos.Application/SpookyTattoos.Application.csproj" />
+  <Project Path="SpookyTattoos.Domain/SpookyTattoos.Domain.csproj" />
+  <Project Path="SpookyTattoos.Infrastructure/SpookyTattoos.Infrastructure.csproj" />
+</Solution>
