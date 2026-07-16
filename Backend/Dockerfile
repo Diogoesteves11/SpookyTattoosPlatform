@@ -1,19 +1,25 @@
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
-ARG TARGETARCH
-WORKDIR /source
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
 
-# Copy project file and restore as distinct layers
-COPY --link *.csproj .
-RUN dotnet restore -a $TARGETARCH
-
-# Copy source code and publish app
-COPY --link . .
-RUN dotnet publish -a $TARGETARCH --no-restore -o /app
+COPY ["SpookyTattoos.slnx", "./"]
+COPY ["SpookyTattoos.API/SpookyTattoos.API.csproj", "SpookyTattoos.API/"]
+COPY ["SpookyTattoos.Application/SpookyTattoos.Application.csproj", "SpookyTattoos.Application/"]
+COPY ["SpookyTattoos.Domain/SpookyTattoos.Domain.csproj", "SpookyTattoos.Domain/"]
+COPY ["SpookyTattoos.Infrastructure/SpookyTattoos.Infrastructure.csproj", "SpookyTattoos.Infrastructure/"]
 
 
-# Runtime stage
-FROM mcr.microsoft.com/dotnet/runtime:10.0-alpine
+RUN dotnet restore "SpookyTattoos.slnx"
+
+COPY . .
+WORKDIR "/src/SpookyTattoos.API"
+RUN dotnet publish "SpookyTattoos.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
-COPY --link --from=build /app .
-USER $APP_UID
-ENTRYPOINT ["./dotnetapp"]
+
+EXPOSE 8080
+
+COPY --from=build /app/publish .
+
+ENTRYPOINT ["dotnet", "SpookyTattoos.API.dll"]

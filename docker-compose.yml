@@ -72,6 +72,26 @@ services:
       "
     networks:
       - spooky_network
+  
+  api:
+    build:
+      context: ./backend 
+      dockerfile: Dockerfile
+    container_name: spookytattoos_api
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8080:8080" 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=spookytattoos_db;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    depends_on:
+      - db
+      - minio
+    networks:
+      - spooky_network
 
 networks:
   spooky_network:
@@ -79,4 +99,4 @@ networks:
 
 volumes:
   pgdata:
-  minio_data: # Regista aqui o novo volume para as imagens
+  minio_data:
