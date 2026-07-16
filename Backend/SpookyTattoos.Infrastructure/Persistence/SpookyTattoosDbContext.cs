@@ -42,7 +42,7 @@ public class SpookyTattoosDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
+        modelBuilder.HasPostgresExtension("pg_trgm");
 
         modelBuilder.Entity<Admin>().ToTable("admins");
         modelBuilder.Entity<Client>().ToTable("clients");
@@ -59,11 +59,47 @@ public class SpookyTattoosDbContext : DbContext
         modelBuilder.Entity<Tattoo>().Property(t => t.DetailScore).HasColumnName("detail");
         modelBuilder.Entity<Tattoo>().Property(t => t.BodyZoneScore).HasColumnName("body_zone");
 
-        modelBuilder.Entity<Admin>().HasIndex(a => a.Username).IsUnique();
-        modelBuilder.Entity<Admin>().HasIndex(a => a.Email).IsUnique();
-        
-        modelBuilder.Entity<Client>().HasIndex(c => c.Email).IsUnique();
-        modelBuilder.Entity<Client>().HasIndex(c => c.GhostPoints).IsDescending();
+        modelBuilder.Entity<Admin>()
+            .HasIndex(c => c.Username)
+            .HasMethod("gin")
+            .HasOperators("gin_trgm_ops");
+        modelBuilder.Entity<Admin>()
+            .HasIndex(c => c.Email)
+            .HasMethod("gin")
+            .HasOperators("gin_trgm_ops");
+        modelBuilder.Entity<Admin>().HasIndex(a => a.Active);
+        modelBuilder.Entity<Client>()
+            .HasIndex(c => c.InstagramUser)
+            .HasMethod("gin")
+            .HasOperators("gin_trgm_ops");
+        modelBuilder.Entity<Client>()
+            .HasIndex(c => c.FullName)
+            .HasMethod("gin")
+            .HasOperators("gin_trgm_ops");
+        modelBuilder.Entity<Client>()
+            .HasIndex(c => c.Email)
+            .HasMethod("gin")
+            .HasOperators("gin_trgm_ops");
+        modelBuilder.Entity<Client>()
+            .HasIndex(c => c.GhostPoints).IsDescending();
+        modelBuilder.Entity<Client>()
+            .HasIndex(c => c.Active);
+        modelBuilder.Entity<Event>()
+            .HasIndex(c => c.EventName)
+            .HasMethod("gin")
+            .HasOperators("gin_trgm_ops");
+        modelBuilder.Entity<Event>()
+            .HasIndex(e => e.StartDate);
+        modelBuilder.Entity<Post>()
+            .HasIndex(p=> p.CreatedAt);
+        modelBuilder.Entity<Voucher>()
+            .HasIndex(v => v.IsUsed);
+        modelBuilder.Entity<Voucher>()
+            .HasIndex(v => v.ExpiresAt);
+        modelBuilder.Entity<Promo>()
+            .HasIndex(p => p.StartDate);
+        modelBuilder.Entity<Promo>()
+            .HasIndex(p => p.EndDate);
 
         modelBuilder.Entity<Job>().Property(j => j.Status).HasConversion<string>();
         modelBuilder.Entity<Job>().Property(j => j.Type).HasConversion<string>();
@@ -79,6 +115,7 @@ public class SpookyTattoosDbContext : DbContext
                 Username = "admin", 
                 Email = "admin@spookytattoos.com",
                 Password = "Admin123!",
+                Active = true,
                 CreatedAt = new DateTimeOffset(2026, 7, 13, 12, 0, 0, TimeSpan.Zero) 
             }
         );

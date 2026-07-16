@@ -28,6 +28,8 @@ public class Admin
 
     public required string Password{get; set;}
 
+    public required bool Active {get; set;} = true;
+
     public DateTimeOffset CreatedAt {get; set;} = DateTimeOffset.UtcNow;
 
     public DateTimeOffset LastLogin {get; set; }

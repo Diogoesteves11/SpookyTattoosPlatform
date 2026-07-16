@@ -20,6 +20,7 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                 .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "pg_trgm");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("SpookyTattoos.Domain.Entities.Admin", b =>
@@ -30,6 +31,10 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -57,13 +62,20 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_admins");
 
+                    b.HasIndex("Active")
+                        .HasDatabaseName("ix_admins_active");
+
                     b.HasIndex("Email")
-                        .IsUnique()
                         .HasDatabaseName("ix_admins_email");
 
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Email"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("Email"), new[] { "gin_trgm_ops" });
+
                     b.HasIndex("Username")
-                        .IsUnique()
                         .HasDatabaseName("ix_admins_username");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Username"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("Username"), new[] { "gin_trgm_ops" });
 
                     b.ToTable("admins", (string)null);
 
@@ -71,6 +83,7 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = 1,
+                            Active = true,
                             CreatedAt = new DateTimeOffset(new DateTime(2026, 7, 13, 12, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "admin@spookytattoos.com",
                             LastLogin = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
@@ -87,6 +100,10 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -122,13 +139,30 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_clients");
 
+                    b.HasIndex("Active")
+                        .HasDatabaseName("ix_clients_active");
+
                     b.HasIndex("Email")
-                        .IsUnique()
                         .HasDatabaseName("ix_clients_email");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Email"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("Email"), new[] { "gin_trgm_ops" });
+
+                    b.HasIndex("FullName")
+                        .HasDatabaseName("ix_clients_full_name");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FullName"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("FullName"), new[] { "gin_trgm_ops" });
 
                     b.HasIndex("GhostPoints")
                         .IsDescending()
                         .HasDatabaseName("ix_clients_ghost_points");
+
+                    b.HasIndex("InstagramUser")
+                        .HasDatabaseName("ix_clients_instagram_user");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("InstagramUser"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("InstagramUser"), new[] { "gin_trgm_ops" });
 
                     b.ToTable("clients", (string)null);
                 });
@@ -202,6 +236,15 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_events");
+
+                    b.HasIndex("EventName")
+                        .HasDatabaseName("ix_events_event_name");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("EventName"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("EventName"), new[] { "gin_trgm_ops" });
+
+                    b.HasIndex("StartDate")
+                        .HasDatabaseName("ix_events_start_date");
 
                     b.ToTable("events", null, t =>
                         {
@@ -318,6 +361,9 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_post_catalog_items");
 
+                    b.HasIndex("CreatedAt")
+                        .HasDatabaseName("ix_post_catalog_items_created_at");
+
                     b.HasIndex("JobId")
                         .IsUnique()
                         .HasDatabaseName("ix_post_catalog_items_job_id");
@@ -389,6 +435,12 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_promos");
+
+                    b.HasIndex("EndDate")
+                        .HasDatabaseName("ix_promos_end_date");
+
+                    b.HasIndex("StartDate")
+                        .HasDatabaseName("ix_promos_start_date");
 
                     b.ToTable("promos", null, t =>
                         {
@@ -498,6 +550,12 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("EmitterId")
                         .HasDatabaseName("ix_vouchers_emitter_id");
+
+                    b.HasIndex("ExpiresAt")
+                        .HasDatabaseName("ix_vouchers_expires_at");
+
+                    b.HasIndex("IsUsed")
+                        .HasDatabaseName("ix_vouchers_is_used");
 
                     b.ToTable("vouchers", (string)null);
                 });

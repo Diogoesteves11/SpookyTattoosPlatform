@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SpookyTattoos.Infrastructure.Persistence; 
+using SpookyTattoos.Domain.Repositories;
+using SpookyTattoos.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,22 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<SpookyTattoosDbContext>(options =>
     options.UseNpgsql(connectionString)
            .UseSnakeCaseNamingConvention());
+
+
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IJobRepository, JobRepository>();
+builder.Services.AddScoped<IPiercingRepository, PiercingRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IPromoRepository, PromoRepository>();
+builder.Services.AddScoped<ITattooRepository, TattooRepository>();
+builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

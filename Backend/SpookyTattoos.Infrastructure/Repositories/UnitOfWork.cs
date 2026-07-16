@@ -14,28 +14,24 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-namespace SpookyTattoos.Domain.Entities;
+using SpookyTattoos.Domain.Repositories;
+using SpookyTattoos.Infrastructure.Persistence;
 
-public class Coupon
+namespace SpookyTattoos.Infrastructure.Repositories;
+
+public class UnitOfWork : IUnitOfWork
 {
-    public int Id { get; set; }
-    
-    public required int ClientId { get; set; }
-    public Client? Client { get; set; }
+    private readonly SpookyTattoosDbContext _dbContext;
 
-    public required int PromoId { get; set; }
-    public Promo? Promo { get; set; }
-
-    public bool IsUsed { get; set; } = false;
-    public DateTimeOffset AcquiredAt { get; set; } = DateTimeOffset.UtcNow;
-
-
-    public void MarkAsUsed()
+    public UnitOfWork(SpookyTattoosDbContext dbContext)
     {
-        if (IsUsed)
-        {
-            throw new InvalidOperationException("Coupon already used");
-        }
-        IsUsed = true;
+        _dbContext = dbContext;
+    }
+
+    public async Task<int> CommitAsync()
+    {
+        // O SaveChangesAsync do EF Core já atua como uma transação por defeito
+        // Se algo falhar aqui, nada é gravado na base de dados.
+        return await _dbContext.SaveChangesAsync();
     }
 }

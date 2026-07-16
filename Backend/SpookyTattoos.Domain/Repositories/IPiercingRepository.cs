@@ -14,28 +14,17 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-namespace SpookyTattoos.Domain.Entities;
+using SpookyTattoos.Domain.Entities;
 
-public class Coupon
+namespace SpookyTattoos.Domain.Repositories;
+
+
+public interface IPiercingRepository
 {
-    public int Id { get; set; }
-    
-    public required int ClientId { get; set; }
-    public Client? Client { get; set; }
+    Task<Piercing?> GetByIdAsync(int id);
+    Task<Piercing?> GetByJobIdAsync(int id);
 
-    public required int PromoId { get; set; }
-    public Promo? Promo { get; set; }
+    Task AddAsync(Piercing piercing);
 
-    public bool IsUsed { get; set; } = false;
-    public DateTimeOffset AcquiredAt { get; set; } = DateTimeOffset.UtcNow;
-
-
-    public void MarkAsUsed()
-    {
-        if (IsUsed)
-        {
-            throw new InvalidOperationException("Coupon already used");
-        }
-        IsUsed = true;
-    }
+    void Update(Piercing piercing);
 }

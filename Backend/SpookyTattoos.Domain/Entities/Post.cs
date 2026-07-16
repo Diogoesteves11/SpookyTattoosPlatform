@@ -53,4 +53,11 @@ public class Post
     public bool IsPublished { get; set; } = false;
 
     public ICollection<PostImage> Images { get; set; } = new List<PostImage>();
+
+
+    public void ChangeState()
+    {
+        if(IsPublished) IsPublished = false;
+        IsPublished = true;
+    }
 }

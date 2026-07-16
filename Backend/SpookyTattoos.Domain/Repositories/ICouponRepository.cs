@@ -14,28 +14,19 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-namespace SpookyTattoos.Domain.Entities;
 
-public class Coupon
+using SpookyTattoos.Domain.Entities;
+
+namespace SpookyTattoos.Domain.Repositories;
+
+public interface ICouponRepository
 {
-    public int Id { get; set; }
+    Task<Coupon?> GetByIdAsync(int id);
+    Task<Coupon?> GetByClientIdAsync(int clientId);
+    Task<IEnumerable<Coupon>> GetByPromoIdAsync(int promoId);
+
+    Task AddAsync(Coupon coupon);
+
+    void Update(Coupon coupon);
     
-    public required int ClientId { get; set; }
-    public Client? Client { get; set; }
-
-    public required int PromoId { get; set; }
-    public Promo? Promo { get; set; }
-
-    public bool IsUsed { get; set; } = false;
-    public DateTimeOffset AcquiredAt { get; set; } = DateTimeOffset.UtcNow;
-
-
-    public void MarkAsUsed()
-    {
-        if (IsUsed)
-        {
-            throw new InvalidOperationException("Coupon already used");
-        }
-        IsUsed = true;
-    }
 }

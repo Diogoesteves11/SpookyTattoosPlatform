@@ -49,7 +49,7 @@ public class Job
 
     public required string ReferenceImageUrl { get; set; }
 
-    // Relações 1-para-N
+
     public ICollection<Tattoo> Tattoos { get; set; } = new List<Tattoo>();
     public ICollection<Piercing> Piercings { get; set; } = new List<Piercing>();
 

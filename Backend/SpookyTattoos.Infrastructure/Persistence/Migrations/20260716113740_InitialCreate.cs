@@ -12,6 +12,9 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:PostgresExtension:pg_trgm", ",,");
+
             migrationBuilder.CreateTable(
                 name: "admins",
                 columns: table => new
@@ -21,6 +24,7 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                     username = table.Column<string>(type: "text", nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
                     password = table.Column<string>(type: "text", nullable: false),
+                    active = table.Column<bool>(type: "boolean", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     last_login = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
@@ -38,6 +42,7 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                     full_name = table.Column<string>(type: "text", nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
                     phone_number = table.Column<string>(type: "text", nullable: false),
+                    active = table.Column<bool>(type: "boolean", nullable: false),
                     instagram_user = table.Column<string>(type: "text", nullable: true),
                     ghost_points = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -258,32 +263,59 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "admins",
-                columns: new[] { "id", "created_at", "email", "last_login", "password", "username" },
-                values: new object[] { 1, new DateTimeOffset(new DateTime(2026, 7, 13, 12, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), "admin@spookytattoos.com", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), "Admin123!", "admin" });
+                columns: new[] { "id", "active", "created_at", "email", "last_login", "password", "username" },
+                values: new object[] { 1, true, new DateTimeOffset(new DateTime(2026, 7, 13, 12, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), "admin@spookytattoos.com", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), "Admin123!", "admin" });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_admins_active",
+                table: "admins",
+                column: "active");
 
             migrationBuilder.CreateIndex(
                 name: "ix_admins_email",
                 table: "admins",
-                column: "email",
-                unique: true);
+                column: "email")
+                .Annotation("Npgsql:IndexMethod", "gin")
+                .Annotation("Npgsql:IndexOperators", new[] { "gin_trgm_ops" });
 
             migrationBuilder.CreateIndex(
                 name: "ix_admins_username",
                 table: "admins",
-                column: "username",
-                unique: true);
+                column: "username")
+                .Annotation("Npgsql:IndexMethod", "gin")
+                .Annotation("Npgsql:IndexOperators", new[] { "gin_trgm_ops" });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_clients_active",
+                table: "clients",
+                column: "active");
 
             migrationBuilder.CreateIndex(
                 name: "ix_clients_email",
                 table: "clients",
-                column: "email",
-                unique: true);
+                column: "email")
+                .Annotation("Npgsql:IndexMethod", "gin")
+                .Annotation("Npgsql:IndexOperators", new[] { "gin_trgm_ops" });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_clients_full_name",
+                table: "clients",
+                column: "full_name")
+                .Annotation("Npgsql:IndexMethod", "gin")
+                .Annotation("Npgsql:IndexOperators", new[] { "gin_trgm_ops" });
 
             migrationBuilder.CreateIndex(
                 name: "ix_clients_ghost_points",
                 table: "clients",
                 column: "ghost_points",
                 descending: new bool[0]);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_clients_instagram_user",
+                table: "clients",
+                column: "instagram_user")
+                .Annotation("Npgsql:IndexMethod", "gin")
+                .Annotation("Npgsql:IndexOperators", new[] { "gin_trgm_ops" });
 
             migrationBuilder.CreateIndex(
                 name: "ix_coupons_client_id",
@@ -294,6 +326,18 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                 name: "ix_coupons_promo_id",
                 table: "coupons",
                 column: "promo_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_events_event_name",
+                table: "events",
+                column: "event_name")
+                .Annotation("Npgsql:IndexMethod", "gin")
+                .Annotation("Npgsql:IndexOperators", new[] { "gin_trgm_ops" });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_events_start_date",
+                table: "events",
+                column: "start_date");
 
             migrationBuilder.CreateIndex(
                 name: "ix_job_piercing_details_job_id",
@@ -311,6 +355,11 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                 column: "client_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_post_catalog_items_created_at",
+                table: "post_catalog_items",
+                column: "created_at");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_post_catalog_items_job_id",
                 table: "post_catalog_items",
                 column: "job_id",
@@ -322,9 +371,29 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                 column: "post_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_promos_end_date",
+                table: "promos",
+                column: "end_date");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_promos_start_date",
+                table: "promos",
+                column: "start_date");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_vouchers_emitter_id",
                 table: "vouchers",
                 column: "emitter_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_vouchers_expires_at",
+                table: "vouchers",
+                column: "expires_at");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_vouchers_is_used",
+                table: "vouchers",
+                column: "is_used");
         }
 
         /// <inheritdoc />
