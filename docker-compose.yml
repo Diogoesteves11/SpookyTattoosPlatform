@@ -29,7 +29,7 @@ services:
     networks:
       - spooky_network
 
-  # serviço de armazenamento de imagens
+
   minio:
     image: minio/minio
     container_name: spookytattoos_minio
@@ -38,8 +38,8 @@ services:
     env_file:
       - .env
     ports:
-      - "9000:9000" # Porta da API (Usada pelo backend)
-      - "9001:9001" # Porta do Web UI (Painel de controlo web)
+      - "9000:9000" 
+      - "9001:9001" 
     volumes:
       - minio_data:/data 
     networks:

@@ -23,8 +23,9 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
-
+*.DS_Store
 .env
+cookies.txt
 
 # .NET Core
 project.lock.json

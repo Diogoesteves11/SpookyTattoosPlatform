@@ -39,9 +39,9 @@ builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// Serviços
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IClientService, ClientService>();
 
 var jwtSecret = builder.Configuration["JWT_SECRET_KEY"];
 if (string.IsNullOrEmpty(jwtSecret))

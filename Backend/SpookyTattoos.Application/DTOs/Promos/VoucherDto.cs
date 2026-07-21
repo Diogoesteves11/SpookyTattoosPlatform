@@ -14,22 +14,14 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-using SpookyTattoos.Domain.Repositories;
-using SpookyTattoos.Infrastructure.Persistence;
 
-namespace SpookyTattoos.Infrastructure.Repositories;
+namespace SpookyTattoos.Application.DTOs.Promos;
 
-public class UnitOfWork : IUnitOfWork
+public class VoucherDto
 {
-    private readonly SpookyTattoosDbContext _dbContext;
-
-    public UnitOfWork(SpookyTattoosDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
-    public async Task<int> CommitAsync()
-    {
-        return await _dbContext.SaveChangesAsync();
-    }
+    public int Id { get; set; }
+    public decimal Value { get; set; }
+    public bool IsUsed { get; set; }
+    public DateTimeOffset GeneratedAt { get; set; }
+    public DateTimeOffset ExpiresAt { get; set; }
 }
