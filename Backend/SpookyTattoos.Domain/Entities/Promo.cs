@@ -24,8 +24,8 @@ public class Promo
     public required string Conditions { get; set; }
     public required int GhostPoints { get; set; }
 
-    public DateTimeOffset? StartDate { get; set; }
-    public DateTimeOffset? EndDate { get; set; }
+    public  DateTimeOffset? StartDate { get; set; }
+    public  DateTimeOffset? EndDate { get; set; }
 
     public bool IsDateRangeValid()
     {

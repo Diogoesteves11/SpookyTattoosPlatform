@@ -38,12 +38,13 @@ public class CouponRepository : ICouponRepository
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public async Task<Coupon?> GetByClientIdAsync(int clientId)
+    public async Task<IEnumerable<Coupon>> GetByClientIdAsync(int clientId)
     {
         return await _dbContext.Coupons
             .Include(c => c.Promo) 
             .Include(c => c.Client)
-            .FirstOrDefaultAsync(c => c.ClientId == clientId);
+            .Where(c => c.ClientId == clientId) 
+            .ToListAsync();
     }    
 
     public async Task<IEnumerable<Coupon>> GetByPromoIdAsync(int promoId)

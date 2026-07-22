@@ -22,9 +22,11 @@ namespace SpookyTattoos.Domain.Repositories;
 public interface IPiercingRepository
 {
     Task<Piercing?> GetByIdAsync(int id);
-    Task<Piercing?> GetByJobIdAsync(int id);
+    Task<IEnumerable<Piercing>> GetByJobIdAsync(int jobId);
 
     Task AddAsync(Piercing piercing);
+    
+    void Delete(Piercing piercing); 
 
     void Update(Piercing piercing);
 }

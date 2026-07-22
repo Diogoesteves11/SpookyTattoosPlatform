@@ -16,7 +16,6 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
 
 namespace SpookyTattoos.Domain.Entities;
 
-// Ajustado para refletir o SQL (hífen não é permitido em Enums de C#, usamos underscore)
 public enum TattooStyles
 {
     FLASH, 

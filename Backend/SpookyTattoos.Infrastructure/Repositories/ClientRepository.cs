@@ -34,8 +34,6 @@ public class ClientRepository : IClientRepository
     public async Task<Client?> GetByIdAsync(int id)
     {
         return await _dbContext.Clients
-            .Include(c => c.Coupons) 
-            .Include(c => c.IssuedVouchers)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
@@ -71,6 +69,21 @@ public class ClientRepository : IClientRepository
             .OrderByDescending(c => c.GhostPoints)
             .Take(limit)
             .ToListAsync();
+    }
+
+
+    public async Task<Client?> GetClientWithVouchersAsync(int id)
+    {
+        return await _dbContext.Clients 
+            .Include(c => c.IssuedVouchers)
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public async Task<Client?> GetClientWithCouponsAsync(int id)
+    {
+        return await _dbContext.Clients
+            .Include(c => c.Coupons)
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task<IEnumerable<Client>> GetActiveAsync()

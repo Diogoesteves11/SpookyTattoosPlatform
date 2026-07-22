@@ -44,14 +44,14 @@ public class AuthService : IAuthService
 
         if (admin == null || !admin.Active)
         {
-            throw new BadRequestException("Credenciais inválidas.");
+            throw new BadRequestException("Invalid Credentials.");
         }
 
         bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, admin.Password);
 
         if (!isPasswordValid)
         {
-            throw new BadRequestException("Credenciais inválidas.");
+            throw new BadRequestException("Invalid Credentials.");
         }
 
         var token = _tokenService.GenerateToken(admin);

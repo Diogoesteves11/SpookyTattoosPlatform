@@ -69,4 +69,9 @@ public class PostRepository : IPostRepository
    {
         _dbContext.Update(post);
    }
+
+   public void Delete(Post post)
+    {
+        _dbContext.Posts.Remove(post); 
+    }
 }

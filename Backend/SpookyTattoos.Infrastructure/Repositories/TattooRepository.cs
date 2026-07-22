@@ -54,4 +54,9 @@ public class TattooRepository : ITattooRepository
     {
         _dbContext.Tattoos.Update(tattoo);
     }
+
+    public void Delete(Tattoo tattoo)
+    {
+        _dbContext.Tattoos.Remove(tattoo);
+    }
 }
