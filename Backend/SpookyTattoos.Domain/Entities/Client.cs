@@ -29,7 +29,7 @@ public class Client
     
     public int GhostPoints { get; set; } = 0;
     
-    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset? CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset? LastJob { get; set; }
     
     // Relações

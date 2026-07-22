@@ -26,6 +26,6 @@ public class ClientResponseDto
     public string? InstagramUser { get; set; }
     public int GhostPoints { get; set; }
     public DateTimeOffset? LastJob { get; set; }
-    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset? CreatedAt { get; set; }
     public bool Active { get; set; }
 }

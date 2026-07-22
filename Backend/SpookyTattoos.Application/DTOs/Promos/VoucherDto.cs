@@ -14,6 +14,7 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
+using System;
 
 namespace SpookyTattoos.Application.DTOs.Promos;
 
@@ -24,4 +25,7 @@ public class VoucherDto
     public bool IsUsed { get; set; }
     public DateTimeOffset GeneratedAt { get; set; }
     public DateTimeOffset ExpiresAt { get; set; }
+    
+    public int EmitterId { get; set; }
+    public string EmitterName { get; set; } = string.Empty;
 }

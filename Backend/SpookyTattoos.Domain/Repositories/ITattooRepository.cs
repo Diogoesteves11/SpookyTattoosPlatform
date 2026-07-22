@@ -25,4 +25,5 @@ public interface ITattooRepository
     
     Task AddAsync(Tattoo tattoo);
     void Update(Tattoo tattoo);
+    void Delete(Tattoo tattoo);
 }

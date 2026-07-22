@@ -60,6 +60,15 @@ public class JobRepository : IJobRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Job>> GetJobsByDateRangeAsync(DateTimeOffset startDate, DateTimeOffset endDate)
+    {
+        return await _dbContext.Jobs
+            .Include(j => j.Client) 
+            .Where(j => j.ScheduledDate >= startDate && j.ScheduledDate <= endDate)
+            .OrderBy(j => j.ScheduledDate)
+            .ToListAsync();
+    }
+
     public async Task AddAsync(Job job)
     {
         await _dbContext.Jobs.AddAsync(job);

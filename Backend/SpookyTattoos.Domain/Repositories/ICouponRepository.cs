@@ -22,7 +22,7 @@ namespace SpookyTattoos.Domain.Repositories;
 public interface ICouponRepository
 {
     Task<Coupon?> GetByIdAsync(int id);
-    Task<Coupon?> GetByClientIdAsync(int clientId);
+    Task<IEnumerable<Coupon>> GetByClientIdAsync(int clientId);
     Task<IEnumerable<Coupon>> GetByPromoIdAsync(int promoId);
 
     Task AddAsync(Coupon coupon);

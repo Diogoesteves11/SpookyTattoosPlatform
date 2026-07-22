@@ -25,6 +25,7 @@ public interface IAdminRepository
     Task<Admin?> GetByIdAsync(int id);
     Task<Admin?> GetByUserNameAsync(string username);
     Task<IEnumerable<Admin>> SearchByEmailAsync(string searchTerm);
+    Task<Admin?> GetByEmailAsync(string email);
     Task<IEnumerable<Admin>> SearchByUsernameAsync(string searchTerm);
     Task<IEnumerable<Admin>> GetActiveAsync();
     Task AddAsync(Admin admin);

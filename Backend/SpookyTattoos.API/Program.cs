@@ -9,7 +9,6 @@ using SpookyTattoos.Domain.Repositories;
 using SpookyTattoos.Infrastructure.Repositories;
 using SpookyTattoos.Application.Interfaces.External;
 using SpookyTattoos.Application.Interfaces.Services;
-using SpookyTattoos.Infrastructure.Security;
 using SpookyTattoos.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +25,7 @@ builder.Services.AddDbContext<SpookyTattoosDbContext>(options =>
     options.UseNpgsql(connectionString)
            .UseSnakeCaseNamingConvention());
 
+// --- Repositories ---
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<ICouponRepository, CouponRepository>();
@@ -37,11 +37,24 @@ builder.Services.AddScoped<IPromoRepository, PromoRepository>();
 builder.Services.AddScoped<ITattooRepository, TattooRepository>();
 builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 
+// --- Unit of Work ---
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// --- Security & External ---
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+// --- Application Services ---
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddScoped<IPiercingService, PiercingService>();
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IPromoService, PromoService>();
+builder.Services.AddScoped<ITattooService, TattooService>();
+builder.Services.AddScoped<IVoucherService, VoucherService>();
 
 var jwtSecret = builder.Configuration["JWT_SECRET_KEY"];
 if (string.IsNullOrEmpty(jwtSecret))
@@ -72,7 +85,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
                 if (!string.IsNullOrEmpty(jti) && await authService.IsTokenRevokedAsync(jti))
                 {
-                    context.Fail("Revoged Token");
+                    context.Fail("Revoked Token");
                 }
             }
         };

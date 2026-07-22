@@ -1,13 +1,37 @@
-using System.Collections.Generic;
+/*
+Copyright 2026 Diogo Esteves, Guilherme Mattos
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+
 using System.Threading.Tasks;
 
 namespace SpookyTattoos.Application.Interfaces.Services;
 
-// Ajusta o namespace do DTO conforme necessário
-// using SpookyTattoos.Application.DTOs.Promos;
+using SpookyTattoos.Application.DTOs.Promos;
 
 public interface IPromoService
 {
-    // Apenas assinaturas base para permitir o build inicial
-    Task<IEnumerable<object>> GetAllAsync(); // Substitui 'object' pelo teu PromoDto
+    Task<IEnumerable<PromoListDto>> GetAllAsync(); 
+
+    Task<PromoDto> GetByIdAsync(int id);
+
+    Task<IEnumerable<PromoListDto>> GetActivePromos();
+
+    Task CreateAsync(CreatePromoDto createPromoDto);
+
+    Task DeleteAsync(int id);
+
+    Task UpdateAsync(UpdatePromoDto updatePromoDto);
 }
