@@ -23,13 +23,13 @@ public class Client
     public required string FullName { get; set; }
     public required string Email { get; set; }
     public required string PhoneNumber { get; set; }
-    public required bool Active {get; set;} = true;
+    public bool Active {get; set;} = true;
 
     public string? InstagramUser { get; set; }
     
     public int GhostPoints { get; set; } = 0;
     
-    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset? CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset? LastJob { get; set; }
     
     // Relações

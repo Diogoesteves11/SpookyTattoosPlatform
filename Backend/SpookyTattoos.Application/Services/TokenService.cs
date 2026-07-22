@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using SpookyTattoos.Application.Interfaces.External;
 using SpookyTattoos.Domain.Entities;
 
-namespace SpookyTattoos.Infrastructure.Security;
+namespace SpookyTattoos.Application.Services;
 
 public class TokenService : ITokenService
 {

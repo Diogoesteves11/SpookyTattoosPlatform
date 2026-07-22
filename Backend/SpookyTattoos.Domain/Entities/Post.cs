@@ -20,7 +20,7 @@ public class PostImage
 {
     public int Id { get; set; }
     
-    public required int PostId { get; set; }
+    public int PostId { get; set; }
     public Post? Post { get; set; }
 
     public required string ImageUrl { get; set; }
@@ -57,7 +57,6 @@ public class Post
 
     public void ChangeState()
     {
-        if(IsPublished) IsPublished = false;
-        IsPublished = true;
+        IsPublished = !IsPublished;
     }
 }

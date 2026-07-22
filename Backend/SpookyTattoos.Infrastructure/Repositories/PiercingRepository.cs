@@ -38,11 +38,12 @@ public class PiercingRepository : IPiercingRepository
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<Piercing?> GetByJobIdAsync(int id)
+    public async Task<IEnumerable<Piercing>> GetByJobIdAsync(int jobId)
     {
         return await _dbContext.Piercings
             .Include(p => p.Job)
-            .FirstOrDefaultAsync(p => p.JobId == id);
+            .Where(p => p.JobId == jobId)
+            .ToListAsync();
     }
 
     public async Task AddAsync(Piercing piercing)
@@ -53,5 +54,10 @@ public class PiercingRepository : IPiercingRepository
     public void Update(Piercing piercing)
     {
         _dbContext.Piercings.Update(piercing);
+    }
+
+    public void Delete(Piercing piercing)
+    {
+        _dbContext.Piercings.Remove(piercing);
     }
 }

@@ -27,6 +27,8 @@ public interface IJobRepository
     Task<IEnumerable<Job>> GetJobsByClientIdAsync(int clientId);
     Task<IEnumerable<Job>> GetActiveJobsAsync();
     
+    Task<IEnumerable<Job>> GetJobsByDateRangeAsync(DateTimeOffset startDate, DateTimeOffset endDate);
+
     Task AddAsync(Job job);
     void Update(Job job);
 }

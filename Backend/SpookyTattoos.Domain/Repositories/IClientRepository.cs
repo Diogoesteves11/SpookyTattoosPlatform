@@ -28,6 +28,8 @@ public interface IClientRepository
     Task<IEnumerable<Client>> GetAllAsync();
     Task<IEnumerable<Client>> GetActiveAsync();
     Task<IEnumerable<Client>> GetTopClientsByGhostPointsAsync(int limit);
+    Task<Client?> GetClientWithVouchersAsync(int id);
+    Task<Client?> GetClientWithCouponsAsync(int id);
     Task<bool> ExistsByEmailAsync(string email);
     
     Task AddAsync(Client client);
