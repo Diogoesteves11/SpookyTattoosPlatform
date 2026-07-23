@@ -91,6 +91,21 @@ public class AdminService : IAdminService
         });
     }
 
+
+    public async Task<IEnumerable<AdminListDto>> GetAllAsync()
+    {
+        var admins = await _adminRepository.GetAllAsync();
+
+        return admins.Select(a => new AdminListDto
+        {
+            Id = a.Id,
+            Username = a.Username,
+            Email = a.Email,
+            Active = a.Active,
+            LastLogin = a.LastLogin
+        });
+    }
+
     public async Task<IEnumerable<AdminListDto>> SearchAsync(string searchTerm)
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
@@ -119,7 +134,6 @@ public class AdminService : IAdminService
 
     public async Task CreateAsync(CreateAdminDto dto)
     {
-        // Validação de Duplicados
         var emailExists = await _adminRepository.GetByEmailAsync(dto.Email);
         if (emailExists != null)
         {

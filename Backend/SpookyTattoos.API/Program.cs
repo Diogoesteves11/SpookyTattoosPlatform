@@ -1,8 +1,28 @@
+/*
+Copyright 2026 Diogo Esteves, Guilherme Mattos
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer; 
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+
+using Minio;
+using SpookyTattoos.Infrastructure.External.Storage;
+using SpookyTattoos.Infrastructure.External.Email;
 
 using SpookyTattoos.Infrastructure.Persistence; 
 using SpookyTattoos.Domain.Repositories;
@@ -55,7 +75,21 @@ builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IPromoService, PromoService>();
 builder.Services.AddScoped<ITattooService, TattooService>();
 builder.Services.AddScoped<IVoucherService, VoucherService>();
+builder.Services.AddScoped<IFinancialService, FinancialService>();
 
+// --- Configuração do MinIO ---
+var minioEndpoint = builder.Configuration["Minio:Endpoint"] ?? "localhost:9000";
+var minioAccessKey = builder.Configuration["MINIO_ROOT_USER"]; 
+var minioSecretKey = builder.Configuration["MINIO_ROOT_PASSWORD"];
+
+builder.Services.AddMinio(configureClient => configureClient
+    .WithEndpoint(minioEndpoint)
+    .WithCredentials(minioAccessKey, minioSecretKey)
+    .Build());
+
+builder.Services.AddScoped<IStorageService, MinioStorageService>();
+
+// --- Configuração do JWT ---
 var jwtSecret = builder.Configuration["JWT_SECRET_KEY"];
 if (string.IsNullOrEmpty(jwtSecret))
 {

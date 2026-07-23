@@ -23,7 +23,7 @@ using SpookyTattoos.Application.Interfaces.Services;
 namespace SpookyTattoos.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
@@ -37,19 +37,34 @@ public class AuthController : ControllerBase
     [AllowAnonymous] 
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
     {
-        var (adminInfo, token) = await _authService.LoginAdminAsync(request);
-
-        var cookieOptions = new CookieOptions
+        try
         {
-            HttpOnly = true,  
-            Secure = true,   
-            SameSite = SameSiteMode.Strict, 
-            Expires = DateTime.UtcNow.AddHours(5) 
-        };
-        
-        Response.Cookies.Append("jwt", token, cookieOptions);
+            var (adminInfo, token) = await _authService.LoginAdminAsync(request);
 
-        return Ok(adminInfo);
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,  
+                Secure = true,   
+                SameSite = SameSiteMode.Strict, 
+                Expires = DateTime.UtcNow.AddHours(5) 
+            };
+
+            Response.Cookies.Append("jwt", token, cookieOptions);
+
+            return Ok(adminInfo);
+        }
+        catch (SpookyTattoos.Application.Exceptions.UnauthorizedException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (SpookyTattoos.Application.Exceptions.NotFoundException ex)
+        {
+            return Unauthorized(new { message = "Credenciais inválidas.", error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Ocorreu um erro interno ao processar o login.", error = ex.Message });
+        }
     }
 
     [HttpPost("logout")]

@@ -12,7 +12,7 @@ using SpookyTattoos.Infrastructure.Persistence;
 namespace SpookyTattoos.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SpookyTattoosDbContext))]
-    [Migration("20260716145221_InitialCreate")]
+    [Migration("20260723131643_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -108,7 +108,7 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("active");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 

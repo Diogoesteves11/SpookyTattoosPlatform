@@ -53,6 +53,11 @@ public class AdminRepository : IAdminRepository
             .Where(a => a.Email != null && EF.Functions.ILike(a.Email, $"%{searchTerm}%"))
             .ToListAsync();
     }
+    public async Task<IEnumerable<Admin>> GetAllAsync()
+    {
+        return await _dbContext.Admins.OrderBy(a => a.Username).ToListAsync();
+    }
+
     public async Task<IEnumerable<Admin>> GetActiveAsync()
     {
         return await _dbContext.Admins.Where(a => a.Active == true).OrderBy(a => a.Username).ToListAsync();

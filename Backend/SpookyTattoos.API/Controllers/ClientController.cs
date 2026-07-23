@@ -14,21 +14,4 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-using SpookyTattoos.Application.DTOs.Admins;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace SpookyTattoos.Application.Interfaces.Services;
-
-public interface IAdminService
-{
-    Task<AdminDto> GetByIdAsync(int id);
-    Task<AdminDto> GetByUsernameAsync(string username);
-    Task<IEnumerable<AdminListDto>> GetActiveAdminsAsync();
-
-    Task<IEnumerable<AdminListDto>> GetAllAsync();
-    Task<IEnumerable<AdminListDto>> SearchAsync(string searchTerm);
-    
-    Task CreateAsync(CreateAdminDto dto);
-    Task UpdateAsync(int id, UpdateAdminDto dto);
-}

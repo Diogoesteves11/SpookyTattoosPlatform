@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SpookyTattoos.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddViewsAndTriggers : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -45,7 +45,7 @@ namespace SpookyTattoos.Infrastructure.Persistence.Migrations
                     active = table.Column<bool>(type: "boolean", nullable: false),
                     instagram_user = table.Column<string>(type: "text", nullable: true),
                     ghost_points = table.Column<int>(type: "integer", nullable: false),
-                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     last_job = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>

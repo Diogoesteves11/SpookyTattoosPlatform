@@ -14,21 +14,20 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-using SpookyTattoos.Application.DTOs.Admins;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace SpookyTattoos.Application.Interfaces.Services;
+namespace SpookyTattoos.Application.DTOs.Financial;
 
-public interface IAdminService
+public class FinancialReportDto
 {
-    Task<AdminDto> GetByIdAsync(int id);
-    Task<AdminDto> GetByUsernameAsync(string username);
-    Task<IEnumerable<AdminListDto>> GetActiveAdminsAsync();
-
-    Task<IEnumerable<AdminListDto>> GetAllAsync();
-    Task<IEnumerable<AdminListDto>> SearchAsync(string searchTerm);
+    public DateTimeOffset StartDate { get; set; }
+    public DateTimeOffset EndDate { get; set; }
     
-    Task CreateAsync(CreateAdminDto dto);
-    Task UpdateAsync(int id, UpdateAdminDto dto);
+    public decimal TotalRevenue { get; set; }
+    public int TotalJobsCompleted { get; set; }
+    public decimal AverageJobPrice { get; set; }
+    
+    // Divisão de receitas por tipo de trabalho (TATTOO, PIERCING, etc.)
+    public Dictionary<string, decimal> RevenueByJobType { get; set; } = new Dictionary<string, decimal>();
 }

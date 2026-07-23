@@ -28,6 +28,8 @@ public interface IAdminRepository
     Task<Admin?> GetByEmailAsync(string email);
     Task<IEnumerable<Admin>> SearchByUsernameAsync(string searchTerm);
     Task<IEnumerable<Admin>> GetActiveAsync();
+
+    Task<IEnumerable<Admin>> GetAllAsync();
     Task AddAsync(Admin admin);
     void Update(Admin admin);
 }

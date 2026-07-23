@@ -18,7 +18,7 @@ namespace SpookyTattoos.Application.DTOs.Admins;
 
 public class UpdateAdminDto
 {
-    public required string Username { get; set; }
-    public required string Email { get; set; }
-    public required bool Active { get; set; }
+    public  string Username { get; set; }
+    public  string Email { get; set; }
+    public  bool Active { get; set; }
 }

@@ -14,8 +14,10 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
+using Microsoft.Extensions.Configuration;
 using SpookyTattoos.Application.DTOs.Posts;
 using SpookyTattoos.Application.Exceptions;
+using SpookyTattoos.Application.Interfaces.External;
 using SpookyTattoos.Application.Interfaces.Services;
 using SpookyTattoos.Domain.Repositories;
 using SpookyTattoos.Domain.Entities;
@@ -31,12 +33,24 @@ public class PostService : IPostService
     private readonly IPostRepository _postRepository;
     private readonly IJobRepository _jobRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IStorageService _storageService;
+    private readonly string _privateBucket;
+    private readonly string _publicBucket;
 
-    public PostService(IPostRepository postRepository, IJobRepository jobRepository, IUnitOfWork unitOfWork)
+    public PostService(
+        IPostRepository postRepository, 
+        IJobRepository jobRepository, 
+        IUnitOfWork unitOfWork, 
+        IStorageService storageService, 
+        IConfiguration config)
     {
         _postRepository = postRepository;
         _jobRepository = jobRepository;
         _unitOfWork = unitOfWork;
+        _storageService = storageService;
+        
+        _privateBucket = config["Minio:PrivateBucket"] ?? "catalog-private";
+        _publicBucket = config["Minio:PublicBucket"] ?? "catalog-public";
     }
 
     public async Task<PostDto> GetByIdAsync(int id)
@@ -119,6 +133,17 @@ public class PostService : IPostService
             throw new NotFoundException("Post", id);
         }
 
+        if (post.IsPublished != dto.IsPublished)
+        {
+            string targetBucket = dto.IsPublished ? _publicBucket : _privateBucket;
+
+            foreach (var image in post.Images)
+            {
+                var newUrl = await _storageService.MoveFileAsync(image.ImageUrl, targetBucket);
+                image.ImageUrl = newUrl; 
+            }
+        }
+
         post.Description = dto.Description;
         post.PostText = dto.PostText;
         post.IsPublished = dto.IsPublished;
@@ -134,6 +159,11 @@ public class PostService : IPostService
         if (post == null)
         {
             throw new NotFoundException("Post", id);
+        }
+
+        foreach (var image in post.Images)
+        {
+            await _storageService.DeleteFileAsync(image.ImageUrl);
         }
 
         _postRepository.Delete(post);

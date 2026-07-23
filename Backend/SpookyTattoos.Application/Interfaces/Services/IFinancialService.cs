@@ -14,21 +14,21 @@ Copyright 2026 Diogo Esteves, Guilherme Mattos
    limitations under the License.
 */
 
-using SpookyTattoos.Application.DTOs.Admins;
-using System.Collections.Generic;
+using SpookyTattoos.Application.DTOs.Financial;
+using System;
 using System.Threading.Tasks;
 
 namespace SpookyTattoos.Application.Interfaces.Services;
 
-public interface IAdminService
+public interface IFinancialService
 {
-    Task<AdminDto> GetByIdAsync(int id);
-    Task<AdminDto> GetByUsernameAsync(string username);
-    Task<IEnumerable<AdminListDto>> GetActiveAdminsAsync();
+    /// <summary>
+    /// Gera um relatório financeiro para um intervalo de datas específico.
+    /// </summary>
+    Task<FinancialReportDto> GenerateReportAsync(DateTimeOffset startDate, DateTimeOffset endDate);
 
-    Task<IEnumerable<AdminListDto>> GetAllAsync();
-    Task<IEnumerable<AdminListDto>> SearchAsync(string searchTerm);
-    
-    Task CreateAsync(CreateAdminDto dto);
-    Task UpdateAsync(int id, UpdateAdminDto dto);
+    /// <summary>
+    /// Método de atalho para gerar o relatório de um mês/ano específico.
+    /// </summary>
+    Task<FinancialReportDto> GenerateMonthlyReportAsync(int year, int month);
 }
